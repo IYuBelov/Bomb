@@ -2,6 +2,14 @@ using System.Collections.Generic;
 using Random = System.Random;
 
 
+public static class Events
+{
+    public const string
+        evGameStateChanged = "evGameStateChanged";
+}
+
+
+
 public enum GameState
 {
     INACTIVE,

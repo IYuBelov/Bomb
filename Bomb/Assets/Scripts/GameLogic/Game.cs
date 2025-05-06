@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameLogic;
 using UnityEngine;
 using Random = System.Random;
 
@@ -134,6 +135,7 @@ public class Game : MonoBehaviour
     public Card CurrentCard { get; private set; }
     Bomb bomb = null;
     Explosion explosion = null;
+    private EventManager _eventManager = null;
 
     public delegate void StateChanged(GameState state);
     public event StateChanged evStateChanged;
@@ -153,6 +155,7 @@ public class Game : MonoBehaviour
         
         bomb = new Bomb(this);
         explosion = new Explosion(this);
+        _eventManager = FindFirstObjectByType<EventManager>();
 
         UserPreferenceData userPreferenceData = UserPreference.Load();
         foreach (string playerName in userPreferenceData.players)
@@ -291,6 +294,7 @@ public class Game : MonoBehaviour
     {
         State = state;
         evStateChanged?.Invoke(State);
+        _eventManager.Call(Events.evGameStateChanged, State);
     }
 
     public void startRound()

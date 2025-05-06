@@ -8,11 +8,6 @@ namespace GameLogic
     {
         private Dictionary<string, Delegate> _eventDictionary = new();
 
-        public void Clear()
-        {
-            _eventDictionary.Clear();
-        }
-
         public void Add(string eventType, Delegate eventHandler)
         {
             if (!_eventDictionary.ContainsKey(eventType))
@@ -43,12 +38,17 @@ namespace GameLogic
             }
         }
 
-        public void Execute(string eventType, params object[] args)
+        public void Call(string eventType, params object[] args)
         {
             if (_eventDictionary.ContainsKey(eventType))
             {
                 _eventDictionary[eventType].DynamicInvoke(args);
             }
+        }
+
+        public void Clear()
+        {
+            _eventDictionary.Clear();
         }
     }
 }
