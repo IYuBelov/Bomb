@@ -127,6 +127,7 @@ public struct Card
 
 public class Game : MonoBehaviour
 {
+    public List<String> playerNames = new ();
     public List<Player> players_ = new List<Player>();
     public int currentPlayerIndex = 0;
     public GameState State { get; private set; } = GameState.INACTIVE;
@@ -135,7 +136,7 @@ public class Game : MonoBehaviour
     public Card CurrentCard { get; private set; }
     Bomb bomb = null;
     Explosion explosion = null;
-    private EventManager _eventManager = null;
+    private Lib.EventManager _eventManager = null;
 
     public delegate void StateChanged(GameState state);
     public event StateChanged evStateChanged;
@@ -155,10 +156,11 @@ public class Game : MonoBehaviour
         
         bomb = new Bomb(this);
         explosion = new Explosion(this);
-        _eventManager = FindFirstObjectByType<EventManager>();
+        var globalContext = FindFirstObjectByType<GlobalContext>();
+        _eventManager = globalContext.GetComponent<GlobalContext>().EventManager;
 
-        UserPreferenceData userPreferenceData = UserPreference.Load();
-        foreach (string playerName in userPreferenceData.players)
+        // UserPreferenceData userPreferenceData = UserPreference.Load();
+        foreach (string playerName in playerNames)
         {
             players_.Add(new Player(playerName));
         }
@@ -195,6 +197,7 @@ public class Game : MonoBehaviour
     {
         currentPlayerIndex = index;
         evCurrentPlayerChanged?.Invoke();
+        _eventManager.Call(Events.evCurrentPlayerChanged);
     }
 
     bool nextCard()
@@ -307,6 +310,7 @@ public class Game : MonoBehaviour
     public void onAlert()
     {
         evAlert?.Invoke();
+        _eventManager.Call(Events.evAlert);
     }    
 
     public void OnReadyToStart()

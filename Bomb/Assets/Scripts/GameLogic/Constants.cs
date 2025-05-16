@@ -5,7 +5,9 @@ using Random = System.Random;
 public static class Events
 {
     public const string
-        evGameStateChanged = "evGameStateChanged";
+        evGameStateChanged = "evGameStateChanged",
+        evCurrentPlayerChanged = "evCurrentPlayerChanged",
+        evAlert = "evAlert";
 }
 
 
