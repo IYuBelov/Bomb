@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Common;
 using GameLogic;
 using UnityEngine;
 using Random = System.Random;
@@ -25,7 +26,7 @@ public class Explosion
     {
         if (!isCountdown)
         {
-            if (duration > Constants.EXPLOSION_COUNTDOWN_TIME)
+            if (duration > Constants.ExplosionCountdownTime)
             {
                 isCountdown = true;
                 game.OnReadyToStart();
@@ -53,8 +54,8 @@ public class Bomb
     public void init()
     {
         var rand = new Random();
-        aliveTime = Constants.MIN_BOMB_ALIVE_TIME + (float)(rand.NextDouble() * (Constants.MAX_BOMB_ALIVE_TIME - Constants.MIN_BOMB_ALIVE_TIME));
-        Debug.Log("<><><> aliveTime aliveTime " + aliveTime.ToString() );
+        aliveTime = Constants.MinBombAliveTime + (float)(rand.NextDouble() * (Constants.MaxBombAliveTime - Constants.MinBombAliveTime));
+        Debug.Log("<><><> aliveTime " + aliveTime.ToString() );
         duration = 0;
         isAlerted = false;
         isExploded = false;
@@ -64,7 +65,7 @@ public class Bomb
     {
         if (isAlerted)
         {
-            aliveTime = duration + Constants.BONUS_BOMB_ALIVE_TIME;
+            aliveTime = duration + Constants.BonusBombAliveTime;
         }
     }
 
@@ -76,7 +77,7 @@ public class Bomb
             return;
         }
 
-        if (!isAlerted && (aliveTime - duration) < Constants.ALERT_BOMB_TIME)
+        if (!isAlerted && (aliveTime - duration) < Constants.AlertBombTime)
         {
             game.onAlert();
             isAlerted = true;
@@ -84,7 +85,7 @@ public class Bomb
 
         if ((aliveTime - duration) <= 0)
         {
-            game.onExplosion();
+            game.OnExplosion();
             isExploded = true;
             return;
         }
@@ -130,34 +131,27 @@ public class Game : MonoBehaviour
     public List<String> playerNames = new ();
     public List<Player> players_ = new List<Player>();
     public int currentPlayerIndex = 0;
-    public GameState State { get; private set; } = GameState.INACTIVE;
+    public GameState State { get; private set; } = GameState.Inactive;
     public float gameTime_ = 0;
-    public Queue<Card> cards = new Queue<Card>();
+    private Queue<Card> _cards = new Queue<Card>();
     public Card CurrentCard { get; private set; }
-    Bomb bomb = null;
-    Explosion explosion = null;
-    private Lib.EventManager _eventManager = null;
-
-    public delegate void StateChanged(GameState state);
-    public event StateChanged evStateChanged;
-
-    public delegate void PlayerChanged();
-    public event PlayerChanged evCurrentPlayerChanged;
-
-    public delegate void Alert();
-    public event Alert evAlert;
-    
+    private Bomb _bomb;
+    private Explosion _explosion;
+    private Lib.Event _event;
     private bool isBlockedPrevPlayer = false;
-    
-    // Start is called before the first frame update
+
+    private void OnEnable()
+    {
+        var globalContext = FindFirstObjectByType<GlobalContext>();
+        _event = globalContext.MakeEvent();
+    }
+
     void Start()
     {
         Debug.Log("<><><> Game.Start");
         
-        bomb = new Bomb(this);
-        explosion = new Explosion(this);
-        var globalContext = FindFirstObjectByType<GlobalContext>();
-        _eventManager = globalContext.GetComponent<GlobalContext>().EventManager;
+        _bomb = new Bomb(this);
+        _explosion = new Explosion(this);
 
         // UserPreferenceData userPreferenceData = UserPreference.Load();
         foreach (string playerName in playerNames)
@@ -165,7 +159,7 @@ public class Game : MonoBehaviour
             players_.Add(new Player(playerName));
         }
 
-        List<string> cardsStrings = new List<string>(Constants.CARDS);
+        List<string> cardsStrings = new List<string>(Constants.Cards);
         cardsStrings.Shuffle();
 
         Random rand = new Random();
@@ -178,14 +172,13 @@ public class Game : MonoBehaviour
         for (int i = 0; i < length; ++i)
         {
             var word = cardsStrings[i];
-            cards.Enqueue(new Card(word, Utils.GetWordConditionRandom()));
+            _cards.Enqueue(new Card(word, Utils.GetWordConditionRandom()));
         }
 
         currentPlayerIndex = rand.Next(players_.Count);
 
         nextCard();
         startRound();
-        Debug.Log("<><><> currentPlayerIndex " + currentPlayerIndex);
     }
 
     public Player getCurrentPlayer()
@@ -196,28 +189,27 @@ public class Game : MonoBehaviour
     void setCurrentPlayerIndex(int index)
     {
         currentPlayerIndex = index;
-        evCurrentPlayerChanged?.Invoke();
-        _eventManager.Call(Events.evCurrentPlayerChanged);
+        _event.Call(Events.EvCurrentPlayerChanged);
     }
 
     bool nextCard()
     {
-        if (cards.Count == 0)
+        if (_cards.Count == 0)
         {
             var result = GetResult();
             if (result.Count > 1 && result[0].Score == result[1].Score)
             {
                 var rand = new Random();
-                var index = rand.Next(Constants.CARDS.Length);
-                cards.Enqueue(new Card(Constants.CARDS[index], Utils.GetWordConditionRandom()));
+                var index = rand.Next(Constants.Cards.Length);
+                _cards.Enqueue(new Card(Constants.Cards[index], Utils.GetWordConditionRandom()));
             }
             else
             {
-                setState(GameState.RESULT);
+                setState(GameState.Result);
                 return false;
             }
         }
-        CurrentCard = cards.Dequeue();
+        CurrentCard = _cards.Dequeue();
         return true;
     }
 
@@ -234,7 +226,7 @@ public class Game : MonoBehaviour
             setCurrentPlayerIndex(++currentPlayerIndex);
         }
 
-        bomb.tryAddBonusTime();
+        _bomb.tryAddBonusTime();
     }
 
     public bool prevPlayer()
@@ -270,23 +262,23 @@ public class Game : MonoBehaviour
     {
         switch (State)
         {
-            case GameState.INACTIVE:
+            case GameState.Inactive:
                 break;
-            case GameState.COUNTDOWN:
-                if (gameTime_ >= Constants.COUNTDOWN_TIME)
+            case GameState.Countdown:
+                if (gameTime_ >= Constants.CountdownTime)
                 {
-                    bomb.init();
-                    explosion.init();
-                    setState(GameState.PLAY);
+                    _bomb.init();
+                    _explosion.init();
+                    setState(GameState.Play);
                 }
                 break;
-            case GameState.PLAY:
-                bomb.Update(Time.deltaTime);
+            case GameState.Play:
+                _bomb.Update(Time.deltaTime);
                 break;
-            case GameState.EXPLOSION:
-                explosion.Update(Time.deltaTime);
+            case GameState.Explosion:
+                _explosion.Update(Time.deltaTime);
                 break;
-            case GameState.RESULT:
+            case GameState.Result:
                 break;
         }
         
@@ -296,21 +288,19 @@ public class Game : MonoBehaviour
     private void setState(GameState state)
     {
         State = state;
-        evStateChanged?.Invoke(State);
-        _eventManager.Call(Events.evGameStateChanged, State);
+        _event.Call(Events.EvGameStateChanged, State);
     }
 
     public void startRound()
     {
         gameTime_ = 0;
         isBlockedPrevPlayer = true; ;
-        setState(GameState.COUNTDOWN);
+        setState(GameState.Countdown);
     } 
     
     public void onAlert()
     {
-        evAlert?.Invoke();
-        _eventManager.Call(Events.evAlert);
+        _event.Call(Events.EvAlert);
     }    
 
     public void OnReadyToStart()
@@ -318,14 +308,14 @@ public class Game : MonoBehaviour
         if (nextCard())
         {
             nextPlayer();
-            setState(GameState.READY_TO_START);
+            setState(GameState.ReadyToStart);
         }
     }
 
-    public void onExplosion()
+    public void OnExplosion()
     {
         var player = getCurrentPlayer();
         player.explosion();
-        setState(GameState.EXPLOSION);
+        setState(GameState.Explosion);
     }
 }

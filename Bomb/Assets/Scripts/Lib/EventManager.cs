@@ -50,4 +50,17 @@ namespace Lib
             _eventDictionary.Clear();
         }
     }
+
+    public class Event
+    {
+        EventManager _eventManager = null;
+        
+        public Event(EventManager eventManager) => _eventManager = eventManager;
+        ~Event() => _eventManager = null;
+
+        public void Call(string eventType, params object[] args)
+        {
+            _eventManager.Call(eventType, args);
+        }
+    }
 }

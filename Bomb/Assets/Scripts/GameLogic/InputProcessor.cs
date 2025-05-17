@@ -1,117 +1,127 @@
 using System.Collections;
 using System.Collections.Generic;
+using Common;
+using GameLogic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class InputProcessor : GameObserverMonoBehaviour
 {
-    [SerializeField]
-    AudioSource playaudio;
+    // [SerializeField]
+    // AudioSource playaudio;
+    //
+    // [SerializeField]
+    // GameObject bombPrefab;
 
-    [SerializeField]
-    GameObject bombPrefab;
+    GameObject _explosion ;
+    private Lib.Event _event;
+    private Vector2 _position;
 
-    GameObject explosion = null;
-
-    private Vector2 position;
+    protected override void Start()
+    {
+        base.Start();
+        var globalContext = FindFirstObjectByType<GlobalContext>();
+        _event = globalContext.MakeEvent();
+    }
 
     // Update is called once per frame
     void Update()
     {
+        ProcessMouse();
+        ProcessTouch();
+    }
+
+    private void ProcessMouse()
+    {
 #if UNITY_STANDALONE_WIN
-        if (gameComponent.State == GameState.PLAY)
+        if (GameComponent.State == GameState.Play)
         {
             if (Input.GetMouseButtonUp(0))
             {
-                gameComponent.nextPlayer();
-                playaudio.Play();
+                GameComponent.nextPlayer();
+                _event.Call(Events.EvTouchNextPlayer);
             }
 
             if (Input.GetMouseButtonUp(1))
             {
-                gameComponent.prevPlayer();
-                playaudio.Play();
+                GameComponent.prevPlayer();
+                _event.Call(Events.EvTouchPrevPlayer);
             }
         }
-        else if (gameComponent.State == GameState.READY_TO_START)
+        else if (GameComponent.State == GameState.ReadyToStart)
         {
             if (Input.GetMouseButtonUp(0))
             {
-                gameComponent.startRound();
-                playaudio.Play();
+                GameComponent.startRound();
+                _event.Call(Events.EvTouchStartRound);
             }
         }
-        else if (gameComponent.State == GameState.RESULT)
+        else if (GameComponent.State == GameState.Result)
         {
             if (Input.GetMouseButtonUp(0))
             {
-                gameComponent.startRound();
+                GameComponent.startRound();
                 SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
             }
         }
 #endif
+    }
 
-
-        if (gameComponent.State == GameState.PLAY)
+    private void ProcessTouch()
+    {
+        if (GameComponent.State == GameState.Play)
         {
             if (Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
                 if (touch.phase == TouchPhase.Ended)
                 {
-                    if ((position - touch.position).magnitude > 650)
+                    if ((_position - touch.position).magnitude > 650)
                     {
-                        gameComponent.prevPlayer();
-                        playaudio.Play();
+                        GameComponent.prevPlayer();
+                        _event.Call(Events.EvTouchPrevPlayer);
                     }
                     else
                     {
-                        gameComponent.nextPlayer();
-                        playaudio.Play();
+                        GameComponent.nextPlayer();
+                        _event.Call(Events.EvTouchNextPlayer);
                     }
-
                 }
 
                 if (touch.phase == TouchPhase.Began)
                 {
-                    position = touch.position;
-
+                    _position = touch.position;
                 }
             }
         }
-        else if (gameComponent.State == GameState.READY_TO_START)
+        else if (GameComponent.State == GameState.ReadyToStart)
         {
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-
-                gameComponent.startRound();
-                playaudio.Play();
-
+                GameComponent.startRound();
+                _event.Call(Events.EvTouchStartRound);
             }
         }
-        else if (gameComponent.State == GameState.RESULT)
+        else if (GameComponent.State == GameState.Result)
         {
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-
-                gameComponent.startRound();
+                GameComponent.startRound();
                 SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
-
             }
         }
     }
 
-    protected override void UpdateState(GameState state)
+    protected override void OnStateChanged(GameState state)
     {
-        if (gameComponent.State == GameState.EXPLOSION)
+        if (GameComponent.State == GameState.Explosion)
         {
-            explosion = (GameObject)Instantiate(bombPrefab, new Vector3(0, -2.8f, 0), Quaternion.identity);
+            //_explosion = (GameObject)Instantiate(bombPrefab, new Vector3(0, -2.8f, 0), Quaternion.identity);
         }
-        else if (explosion != null)
+        else if (_explosion != null)
         {
-            Destroy(explosion);
-            explosion = null;
+            // Destroy(_explosion);
+            // _explosion = null;
         }
     }
-
 }

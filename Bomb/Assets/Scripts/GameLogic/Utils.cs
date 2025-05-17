@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameLogic;
 
 
 namespace contribute
@@ -31,6 +32,6 @@ public static class Utils
     private static Random rand = new Random();
     private static readonly WordCondition[] CONDITIONS =
     {
-        WordCondition.BEGINING, WordCondition.ANYWHERE, WordCondition.END
+        WordCondition.Begin, WordCondition.Anywhere, WordCondition.End
     };
 }
