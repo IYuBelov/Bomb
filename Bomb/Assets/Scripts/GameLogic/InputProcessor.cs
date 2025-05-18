@@ -1,82 +1,104 @@
-using System.Collections;
-using System.Collections.Generic;
 using Common;
-using GameLogic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class InputProcessor : GameObserverMonoBehaviour
+namespace GameLogic
 {
-    // [SerializeField]
-    // AudioSource playaudio;
-    //
-    // [SerializeField]
-    // GameObject bombPrefab;
-
-    GameObject _explosion ;
-    private Lib.Event _event;
-    private Vector2 _position;
-
-    protected override void Start()
+    public class InputProcessor : GameObserverMonoBehaviour
     {
-        base.Start();
-        var globalContext = FindFirstObjectByType<GlobalContext>();
-        _event = globalContext.MakeEvent();
-    }
+        private GameInput _gameInput;
+        private InputAction _pointAction;
+        private InputAction _clickAction;
+        private InputAction _rightClickAction;
+        
+        private Lib.Event _event;
+        private Vector2 _position;
 
-    // Update is called once per frame
-    void Update()
-    {
-        ProcessMouse();
-        ProcessTouch();
-    }
-
-    private void ProcessMouse()
-    {
-#if UNITY_STANDALONE_WIN
-        if (GameComponent.State == GameState.Play)
+        private void Awake()
         {
-            if (Input.GetMouseButtonUp(0))
+            _gameInput = new GameInput();
+        }
+        
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _gameInput.Enable();
+        }
+
+        protected override void OnDisable()
+        {
+            _gameInput.Disable();
+            base.OnDisable();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            
+            _clickAction = _gameInput.UI.Click;
+            _rightClickAction = _gameInput.UI.RightClick;
+            _pointAction = _gameInput.UI.Point;
+
+            var globalContext = FindFirstObjectByType<GlobalContext>();
+            _event = globalContext.MakeEvent();
+        }
+
+        void Update()
+        {
+            if (Application.isMobilePlatform)
             {
-                GameComponent.nextPlayer();
-                _event.Call(Events.EvTouchNextPlayer);
+                ProcessTouchInput();
             }
 
-            if (Input.GetMouseButtonUp(1))
+            else if (Application.platform == RuntimePlatform.WindowsPlayer || 
+                     Application.platform == RuntimePlatform.WindowsEditor)
             {
-                GameComponent.prevPlayer();
-                _event.Call(Events.EvTouchPrevPlayer);
+                ProcessMouseInput();
             }
         }
-        else if (GameComponent.State == GameState.ReadyToStart)
-        {
-            if (Input.GetMouseButtonUp(0))
-            {
-                GameComponent.startRound();
-                _event.Call(Events.EvTouchStartRound);
-            }
-        }
-        else if (GameComponent.State == GameState.Result)
-        {
-            if (Input.GetMouseButtonUp(0))
-            {
-                GameComponent.startRound();
-                SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
-            }
-        }
-#endif
-    }
 
-    private void ProcessTouch()
-    {
-        if (GameComponent.State == GameState.Play)
+        private void ProcessMouseInput()
         {
-            if (Input.touchCount > 0)
+            if (GameComponent.State == GameState.Play)
             {
-                Touch touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Ended)
+                if (_clickAction.WasReleasedThisFrame())
                 {
-                    if ((_position - touch.position).magnitude > 650)
+                    GameComponent.nextPlayer();
+                    _event.Call(Events.EvTouchNextPlayer);
+                }
+
+                if (_rightClickAction.WasReleasedThisFrame())
+                {
+                    GameComponent.prevPlayer();
+                    _event.Call(Events.EvTouchPrevPlayer);
+                }
+            }
+            else if (GameComponent.State == GameState.ReadyToStart)
+            {
+                if (_clickAction.WasReleasedThisFrame())
+                {
+                    GameComponent.startRound();
+                    _event.Call(Events.EvTouchStartRound);
+                }
+            }
+            else if (GameComponent.State == GameState.Result)
+            {
+                if (_clickAction.WasReleasedThisFrame())
+                {
+                    SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+                }
+            }
+        }
+
+        private void ProcessTouchInput()
+        {
+            if (GameComponent.State == GameState.Play)
+            {
+                if (_clickAction.WasReleasedThisFrame())
+                {
+                    Vector2 currentPosition = _pointAction.ReadValue<Vector2>();
+                    if ((_position - currentPosition).magnitude > 650)
                     {
                         GameComponent.prevPlayer();
                         _event.Call(Events.EvTouchPrevPlayer);
@@ -88,40 +110,26 @@ public class InputProcessor : GameObserverMonoBehaviour
                     }
                 }
 
-                if (touch.phase == TouchPhase.Began)
+                if (_clickAction.WasPressedThisFrame())
                 {
-                    _position = touch.position;
+                    _position = _pointAction.ReadValue<Vector2>();
                 }
             }
-        }
-        else if (GameComponent.State == GameState.ReadyToStart)
-        {
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+            else if (GameComponent.State == GameState.ReadyToStart)
             {
-                GameComponent.startRound();
-                _event.Call(Events.EvTouchStartRound);
+                if (_clickAction.WasReleasedThisFrame())
+                {
+                    GameComponent.startRound();
+                    _event.Call(Events.EvTouchStartRound);
+                }
             }
-        }
-        else if (GameComponent.State == GameState.Result)
-        {
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+            else if (GameComponent.State == GameState.Result)
             {
-                GameComponent.startRound();
-                SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+                if (_clickAction.WasReleasedThisFrame())
+                {
+                    SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
+                }
             }
-        }
-    }
-
-    protected override void OnStateChanged(GameState state)
-    {
-        if (GameComponent.State == GameState.Explosion)
-        {
-            //_explosion = (GameObject)Instantiate(bombPrefab, new Vector3(0, -2.8f, 0), Quaternion.identity);
-        }
-        else if (_explosion != null)
-        {
-            // Destroy(_explosion);
-            // _explosion = null;
         }
     }
 }

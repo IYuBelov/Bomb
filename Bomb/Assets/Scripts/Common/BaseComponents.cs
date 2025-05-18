@@ -16,16 +16,17 @@ namespace Common
         protected Game GameComponent;
         private Lib.EventListener _eventListener;
 
-        void OnEnable()
+        protected virtual void OnEnable()
         {
             var globalContext = FindFirstObjectByType<GlobalContext>();
             _eventListener = globalContext.MakeEventListener();
-            _eventListener.Add(Events.EvGameStateChanged, new Action<GameState>(OnStateChanged));
-            _eventListener.Add(Events.EvCurrentPlayerChanged, new Action(OnCurrentPlayerChanged));
-            _eventListener.Add(Events.EvAlert, new Action(OnAlert));
+            if (this.didStart)
+            {
+                Subscribe();
+            }
         }
 
-        void OnDisable()
+        protected virtual void OnDisable()
         {
             _eventListener.RemoveAllListeners();
         }
@@ -34,6 +35,7 @@ namespace Common
         {
             var game = GameObject.Find("Game");
             GameComponent = game.GetComponent<Game>();
+            Subscribe();
         }
 
         protected virtual void OnStateChanged(GameState state)
@@ -49,6 +51,13 @@ namespace Common
         protected virtual void OnAlert()
         {
 
+        }
+
+        private void Subscribe()
+        {
+            _eventListener.Add(Events.EvGameStateChanged, new Action<GameState>(OnStateChanged));
+            _eventListener.Add(Events.EvCurrentPlayerChanged, new Action(OnCurrentPlayerChanged));
+            _eventListener.Add(Events.EvAlert, new Action(OnAlert));
         }
     }
 }
