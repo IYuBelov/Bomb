@@ -18,7 +18,16 @@ namespace Sound
         AudioClip playClip;
         
         [SerializeField]
-        AudioClip explosionClip;
+        AudioClip explosionClip;        
+        
+        [SerializeField]
+        AudioSource audioTickSource;
+        
+        [SerializeField]
+        AudioClip tickClip1;        
+      
+        [SerializeField]
+        AudioClip tickClip2;
         
         protected override void Start()
         {
@@ -37,18 +46,25 @@ namespace Sound
             {
                 case GameState.Play:
                     audioSource.PlayOneShot(playClip);
+                    PlayTick(tickClip1);
                     break;
                 case GameState.Explosion:
                     audioSource.PlayOneShot(explosionClip);
+                    audioTickSource.Stop();
                     break;
             }
         }
         
-        void PlayOnceShot(AudioClip clip)
+        void PlayTick(AudioClip clip)
         {
-            audioSource.clip = clip;
-            audioSource.loop = false;
-            audioSource.Play();
+            audioTickSource.clip = clip;
+            audioTickSource.loop = true;
+            audioTickSource.Play();
+        }
+        
+        protected override void OnAlert()
+        {
+            PlayTick(tickClip2);
         }
         
     }
