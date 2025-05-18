@@ -1,37 +1,18 @@
 using System;
-using System.Collections.Generic;
-using GameLogic;
 
-
-namespace contribute
+namespace GameLogic
 {
-    public class Singleton<T> where T : class, new()
+    public static class Utils
     {
-        private Singleton()
+        public static WordCondition GetWordConditionRandom()
         {
-            
+            return Utils.Conditions[_rand.Next(Utils.Conditions.Length)];
         }
 
-        private static readonly Lazy<T> instance = new Lazy<T>(() => new T());
-
-        public static T Instance
+        private static readonly Random _rand = new Random();
+        private static readonly WordCondition[] Conditions =
         {
-            get { return instance.Value; }
-        }
+            WordCondition.Begin, WordCondition.Anywhere, WordCondition.End
+        };
     }
-}
-
-
-public static class Utils
-{
-    public static WordCondition GetWordConditionRandom()
-    {
-        return Utils.CONDITIONS[rand.Next(Utils.CONDITIONS.Length)];
-    }
-
-    private static Random rand = new Random();
-    private static readonly WordCondition[] CONDITIONS =
-    {
-        WordCondition.Begin, WordCondition.Anywhere, WordCondition.End
-    };
 }

@@ -7,21 +7,21 @@ using Event = Lib.Event;
 
 public class GlobalContext : MonoBehaviour
 {
-    public EventManager EventManager;
+    private EventManager _eventManager;
     
     void Awake()
     {
-        EventManager = new ();
+        _eventManager = new ();
         this.AddComponent<Debugger>();
     }
 
     public EventListener MakeEventListener()
     {
-        return new EventListener(this.EventManager);
+        return new EventListener(this._eventManager);
     }
     
     public Event MakeEvent()
     {
-        return new Event(this.EventManager);
+        return new Event(this._eventManager);
     }
 }
