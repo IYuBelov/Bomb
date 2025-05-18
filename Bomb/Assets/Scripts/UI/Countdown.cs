@@ -14,11 +14,21 @@ namespace UI
 
         float timeRemaining = 0;
         bool timerIsRunning = false;
-        // Start is called before the first frame update
+        
+        
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            Debug.Log("SSSSSSSSSSSSSS");
+        }
+        
         protected override void Start()
-        {   
-            textComponent = GetComponent<Text>();
+        {
+            Debug.Log("22222222");
             base.Start();
+            
+            
+            textComponent = GetComponent<Text>();
         }
 
         protected override void OnStateChanged(GameState state)

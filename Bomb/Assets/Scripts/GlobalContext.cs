@@ -10,7 +10,7 @@ public class GlobalContext : MonoBehaviour
     
     void Awake()
     {
-        _eventManager = new ();
+        _eventManager = new EventManager();
         this.AddComponent<Debugger>();
     }
 
