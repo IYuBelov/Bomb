@@ -53,7 +53,7 @@ namespace Lib
 
     public class Event
     {
-        private EventManager _eventManager = null;
+        private EventManager _eventManager;
         
         public Event(EventManager eventManager) => _eventManager = eventManager;
         ~Event() => _eventManager = null;

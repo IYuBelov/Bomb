@@ -5,10 +5,10 @@ namespace Lib
 {
     public class EventListener
     {
-        private Lib.EventManager _eventManager = null;
+        private EventManager _eventManager;
         private readonly Dictionary<string, List<Delegate>> _mapListeners = new();
 
-        public EventListener(Lib.EventManager eventManager)
+        public EventListener(EventManager eventManager)
         {
             _eventManager = eventManager;
         }
