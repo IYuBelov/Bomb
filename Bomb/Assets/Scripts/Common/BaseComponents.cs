@@ -6,9 +6,9 @@ namespace Common
 {
     public class GameObserverMonoBehaviour : MonoBehaviour
     {
-        ~GameObserverMonoBehaviour()
+        
+        void OnDestroy()
         {
-            _eventListener.RemoveAllListeners();
             _eventListener = null;
             GameComponent = null;
         }
@@ -32,7 +32,7 @@ namespace Common
 
         protected virtual void Start()
         {
-            var game = GameObject.FindWithTag("Game");
+            var game = GameObject.Find("Game");
             GameComponent = game.GetComponent<Game>();
         }
 
