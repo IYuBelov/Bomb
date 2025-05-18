@@ -139,6 +139,9 @@ public class Game : MonoBehaviour
     private Explosion _explosion;
     private Lib.Event _event;
     private bool isBlockedPrevPlayer = false;
+    
+    private int _lastSecond = -1;
+    
 
     private void OnEnable()
     {
@@ -265,6 +268,18 @@ public class Game : MonoBehaviour
             case GameState.Inactive:
                 break;
             case GameState.Countdown:
+                int currentSecond = Mathf.FloorToInt(gameTime_);
+                if (currentSecond > _lastSecond)
+                {
+                    _lastSecond = currentSecond;
+                    var countdownTime =  Mathf.FloorToInt(Constants.CountdownTime);
+                    var count = countdownTime - _lastSecond;
+                    if (count > 0)
+                    {
+                        _event.Call(Events.EvCountDownTickChanged, countdownTime - _lastSecond);
+                    }
+                }
+
                 if (gameTime_ >= Constants.CountdownTime)
                 {
                     _bomb.init();
@@ -281,7 +296,6 @@ public class Game : MonoBehaviour
             case GameState.Result:
                 break;
         }
-        
         gameTime_ += Time.deltaTime;
     }
 
@@ -294,6 +308,7 @@ public class Game : MonoBehaviour
     public void startRound()
     {
         gameTime_ = 0;
+        _lastSecond = -1;
         isBlockedPrevPlayer = true; ;
         setState(GameState.Countdown);
     } 

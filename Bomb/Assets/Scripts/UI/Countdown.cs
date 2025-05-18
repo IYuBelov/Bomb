@@ -1,3 +1,4 @@
+using System;
 using Common;
 using GameLogic;
 using UnityEngine;
@@ -7,76 +8,29 @@ namespace UI
 {
     public class Countdown : GameObserverMonoBehaviour
     {
-        Text textComponent;
+        TMPro.TextMeshProUGUI textComponent;
     
         [SerializeField]
         AudioSource playaudio;
 
-        float timeRemaining = 0;
-        bool timerIsRunning = false;
-        
-        
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-            Debug.Log("SSSSSSSSSSSSSS");
-        }
-        
         protected override void Start()
         {
-            Debug.Log("22222222");
             base.Start();
-            
-            
-            textComponent = GetComponent<Text>();
+            textComponent = GetComponent<TMPro.TextMeshProUGUI>();
+            _eventListener.Add(Events.EvCountDownTickChanged, new Action<int>(OnCountDownTickChanged));
+        }
+
+        void OnCountDownTickChanged(int count)
+        {
+            textComponent.text = $"{count:0}";
+            playaudio.Play();
         }
 
         protected override void OnStateChanged(GameState state)
         {
-            if (state == GameState.Countdown)
+            if (state == GameState.Play)
             {
-                timerIsRunning = true;
-                timeRemaining = Constants.CountdownTime - 0.01f;
-                UpdateTime(timeRemaining);
-            }
-            else
-            {
-                timerIsRunning = false;
                 textComponent.text = "";
-            }
-        }
-
-        void Update()
-        {
-            if (timerIsRunning)
-            {
-                timeRemaining -= Time.deltaTime;
-                if (timeRemaining > 0)
-                {
-                    UpdateTime(timeRemaining);
-                }
-                else
-                {
-                    timeRemaining = 0;
-                    timerIsRunning = false;
-                }
-            }
-        }
-
-        void DisplayTime(float timeToDisplay)
-        {
-            timeToDisplay += 1;
-            float seconds = Mathf.FloorToInt(timeToDisplay);
-            textComponent.text = string.Format("{0:0}", seconds);
-        }
-
-        void UpdateTime(float timeToDisplay)
-        {
-            var oldText = textComponent.text;
-            DisplayTime(timeToDisplay);
-            if (oldText != textComponent.text)
-            {
-                playaudio.Play();
             }
         }
     }

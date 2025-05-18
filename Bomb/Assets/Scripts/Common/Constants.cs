@@ -8,6 +8,7 @@ namespace Common
             EvTouchNextPlayer = "evTouchNextPlayer",
             EvTouchPrevPlayer = "evTouchPrevPlayer",
             EvTouchStartRound = "evTouchStartRound",
-            EvAlert = "evAlert";
+            EvAlert = "evAlert",
+            EvCountDownTickChanged = "EvCountDownTickChanged";
     }
 }

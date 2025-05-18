@@ -14,7 +14,7 @@ namespace Common
         }
 
         protected Game GameComponent;
-        private Lib.EventListener _eventListener;
+        protected Lib.EventListener _eventListener;
 
         protected virtual void OnEnable()
         {
