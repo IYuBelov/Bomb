@@ -6,12 +6,12 @@ namespace UI
 {
     public class PlayerName : GameObserverMonoBehaviour
     {
-        Text textComponent;
+        TMPro.TextMeshProUGUI textComponent;
         // Start is called before the first frame update
         protected override void Start()
         {
-            textComponent = GetComponent<Text>();
             base.Start();
+            textComponent = GetComponent<TMPro.TextMeshProUGUI>();
         }
 
         protected override void OnCurrentPlayerChanged()

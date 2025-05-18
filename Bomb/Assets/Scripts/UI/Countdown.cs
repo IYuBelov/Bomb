@@ -9,9 +9,6 @@ namespace UI
     public class Countdown : GameObserverMonoBehaviour
     {
         TMPro.TextMeshProUGUI textComponent;
-    
-        [SerializeField]
-        AudioSource playaudio;
 
         protected override void Start()
         {
@@ -23,7 +20,6 @@ namespace UI
         void OnCountDownTickChanged(int count)
         {
             textComponent.text = $"{count:0}";
-            playaudio.Play();
         }
 
         protected override void OnStateChanged(GameState state)

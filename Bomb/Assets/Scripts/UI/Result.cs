@@ -6,12 +6,12 @@ namespace UI
 {
     public class Result : GameObserverMonoBehaviour
     {
-        Text textComponent;
+        TMPro.TextMeshProUGUI textComponent;
         // Start is called before the first frame update
         protected override void Start()
         {
-            textComponent = GetComponent<Text>();
             base.Start();
+            textComponent = GetComponent<TMPro.TextMeshProUGUI>();
         }
 
         protected override void OnStateChanged(GameState state)
@@ -19,10 +19,10 @@ namespace UI
             if (state == GameState.Result)
             {
                 var result = GameComponent.GetResult();
-                string text = string.Format("���������� {0}!\n\n", result[0].Name);
+                string text = $"Победил {result[0].Name}!\n\n";
                 foreach(Player player in result)
                 {
-                    text = text + string.Format("{0}:\t\t{1}\n", player.Name, player.Score);
+                    text = text + $"{player.Name}:\t\t{player.Score}\n";
                 }
 
                 textComponent.text = text;
