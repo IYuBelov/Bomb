@@ -1,33 +1,62 @@
 using System;
 using Common;
 using GameLogic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Sound
 {
+
+    public static class SoundUtils
+    {
+        public static void PlayLoop([CanBeNull] AudioSource audioSource, [CanBeNull] AudioClip audioClip)
+        {
+            if (audioSource && audioClip)
+            {
+                audioSource.clip = audioClip;
+                audioSource.loop = true;
+                audioSource.Play();
+            }
+        }
+        
+        public static void PlayOneShot([CanBeNull] AudioSource audioSource, [CanBeNull] AudioClip audioClip)
+        {
+            if (audioSource&& audioClip)
+            {
+                audioSource.PlayOneShot(audioClip);
+            }
+        }
+    }
+
     public class GameSound : GameObserverMonoBehaviour
     {
 
         [SerializeField]
-        AudioSource audioSource;
+        private AudioSource audioSource;
 
         [SerializeField]
-        AudioClip countdownClip;
+        private AudioClip countdownTickShot;
 
         [SerializeField]
-        AudioClip playClip;
+        private AudioClip playShot;
         
         [SerializeField]
-        AudioClip explosionClip;        
+        private AudioClip explosionClip;        
         
         [SerializeField]
-        AudioSource audioTickSource;
+        private AudioSource tickAudioSource;
         
         [SerializeField]
-        AudioClip tickClip1;        
+        private AudioClip playTickLoop;        
       
         [SerializeField]
-        AudioClip tickClip2;
+        private AudioClip alertTickLoop;      
+        
+        [SerializeField]
+        private AudioSource musicAudioSource;
+        
+        [SerializeField]
+        private AudioClip playMusicLoop;
         
         protected override void Start()
         {
@@ -37,7 +66,7 @@ namespace Sound
 
         void OnCountDownTickChanged(int count)
         {
-            audioSource.PlayOneShot(countdownClip);
+            SoundUtils.PlayOneShot(audioSource, countdownTickShot);
         }  
         
         protected override void OnStateChanged(GameState state)
@@ -45,26 +74,21 @@ namespace Sound
             switch (state)
             {
                 case GameState.Play:
-                    audioSource.PlayOneShot(playClip);
-                    PlayTick(tickClip1);
+                    SoundUtils.PlayOneShot(audioSource, playShot);
+                    SoundUtils.PlayLoop(tickAudioSource, playTickLoop);
+                    SoundUtils.PlayLoop(musicAudioSource, playMusicLoop);
                     break;
                 case GameState.Explosion:
-                    audioSource.PlayOneShot(explosionClip);
-                    audioTickSource.Stop();
+                    SoundUtils.PlayOneShot(audioSource, explosionClip);
+                    tickAudioSource.Stop();
+                    musicAudioSource.Stop();
                     break;
             }
         }
         
-        void PlayTick(AudioClip clip)
-        {
-            audioTickSource.clip = clip;
-            audioTickSource.loop = true;
-            audioTickSource.Play();
-        }
-        
         protected override void OnAlert()
         {
-            PlayTick(tickClip2);
+            SoundUtils.PlayLoop(tickAudioSource, alertTickLoop);
         }
         
     }

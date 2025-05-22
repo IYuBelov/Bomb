@@ -172,13 +172,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 422390967}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 030501e79507450f91438a365503672e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 422390971}
-  backgroundMusic: {fileID: 8300000, guid: 340867bef9cc6784cbb76256c0d6249a, type: 3}
+  backgroundMusic: {fileID: 8300000, guid: ab7136735e7801d4fb48bf75e5801377, type: 3}
 --- !u!82 &422390971
 AudioSource:
   m_ObjectHideFlags: 0
@@ -845,6 +845,7 @@ GameObject:
   - component: {fileID: 1743030068}
   - component: {fileID: 1743030067}
   - component: {fileID: 1743030069}
+  - component: {fileID: 1743030070}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -880,9 +881,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNames:
-  - Player 1
-  - Player 2
-  - Player 3
+  - "\u0413\u0435\u0440\u043C\u0430\u043D"
+  - "\u0418\u0433\u043E\u0440\u044C"
   currentPlayerIndex: 0
   gameTime_: 0
 --- !u!114 &1743030066
@@ -910,12 +910,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 1743030068}
-  countdownClip: {fileID: 8300000, guid: fe477b7e21ce35c4aa5dcb5eb75f879b, type: 3}
-  playClip: {fileID: 8300000, guid: c100a10a4fb20054b9f747b4b5001a15, type: 3}
+  countdownTickShot: {fileID: 8300000, guid: fe477b7e21ce35c4aa5dcb5eb75f879b, type: 3}
+  playShot: {fileID: 8300000, guid: c100a10a4fb20054b9f747b4b5001a15, type: 3}
   explosionClip: {fileID: 8300000, guid: cb7567ceb7b51ea4c8d4b147cf53e372, type: 3}
-  audioTickSource: {fileID: 1743030069}
-  tickClip1: {fileID: 8300000, guid: 69307ca1947ba1248a65e17596fcd491, type: 3}
-  tickClip2: {fileID: 8300000, guid: 6d6529ef3bb5f334b9a1a7300a4735e0, type: 3}
+  tickAudioSource: {fileID: 1743030069}
+  playTickLoop: {fileID: 0}
+  alertTickLoop: {fileID: 0}
+  musicAudioSource: {fileID: 1743030070}
+  playMusicLoop: {fileID: 8300000, guid: ab7136735e7801d4fb48bf75e5801377, type: 3}
 --- !u!82 &1743030068
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1014,6 +1016,103 @@ AudioSource:
     m_PostInfinity: 2
     m_RotationOrder: 4
 --- !u!82 &1743030069
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743030063}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &1743030070
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
