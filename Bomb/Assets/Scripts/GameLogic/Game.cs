@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Common;
 using GameLogic;
 using UnityEngine;
+using Unity.VisualScripting;
 using Random = System.Random;
 
 public class Explosion
@@ -128,6 +129,7 @@ public struct Card
 
 public class Game : MonoBehaviour
 {
+    private GlobalContext _globalContext;
     public List<String> playerNames = new ();
     public List<Player> players_ = new List<Player>();
     public int currentPlayerIndex = 0;
@@ -145,19 +147,21 @@ public class Game : MonoBehaviour
 
     private void OnEnable()
     {
-        var globalContext = FindFirstObjectByType<GlobalContext>();
-        _event = globalContext.MakeEvent();
+        _globalContext = FindFirstObjectByType<GlobalContext>();
+        _event = _globalContext.MakeEvent();
     }
 
     void Start()
     {
+        this.AddComponent<Debugger>();
         Debug.Log("<><><> Game.Start");
         
         _bomb = new Bomb(this);
         _explosion = new Explosion(this);
 
         // UserPreferenceData userPreferenceData = UserPreference.Load();
-        foreach (string playerName in playerNames)
+        var pdata = _globalContext.PData();
+        foreach (string playerName in pdata.playerNames)
         {
             players_.Add(new Player(playerName));
         }

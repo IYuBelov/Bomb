@@ -34,6 +34,7 @@ namespace Common
 
             Subscribe();
         }
+        
 
         void OnStateChanged(GameState state)
         {
