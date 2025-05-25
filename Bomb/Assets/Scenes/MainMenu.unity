@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -387,7 +387,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 382986459}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!224 &382986462
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1451,7 +1451,7 @@ MonoBehaviour:
   openModalButton: {fileID: 0}
   modalPanel: {fileID: 382986459}
   playerNameInputField: {fileID: 0}
-  addPlayerButton: {fileID: 853875719}
+  addPlayerButton: {fileID: 853875715}
   playerIconPrefab: {fileID: 1523734422959057243, guid: 740b6701c2e0b634d8b592fd050a0c4f, type: 3}
   playerCircleContainer: {fileID: 593229894}
   closeButton: {fileID: 0}
@@ -1512,7 +1512,7 @@ Canvas:
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
-  m_OverridePixelPerfect: 1
+  m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
@@ -1532,9 +1532,9 @@ RectTransform:
   m_LocalScale: {x: 3.2581832, y: 3.2581832, z: 3.2581832}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 382986462}
   - {fileID: 593229894}
   - {fileID: 853875716}
+  - {fileID: 382986462}
   m_Father: {fileID: 361155554}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

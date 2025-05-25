@@ -39,6 +39,7 @@ namespace Lib.Unity.UI
             addPlayerButton.GetComponent<Button>().onClick.AddListener(AddPlayer);
             //closeButton.onClick.AddListener(CloseModal);
             //modalPanel.SetActive(false);
+    
             circleRadius = (float)(gameObject.GetComponent<RectTransform>().rect.width * 0.35);
         }
 
@@ -83,11 +84,12 @@ namespace Lib.Unity.UI
             canvasGroup.alpha = 1;
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
-            
+            modalPanel.transform.SetAsLastSibling();
+
             GameObject InputPlayer = modalPanel.transform.Find("InputPlayer").gameObject;
             GameObject AddPlayerButton = modalPanel.transform.Find("AddPlayerButton").gameObject;
             GameObject CloseButton = modalPanel.transform.Find("CloseButton").gameObject;
-            
+
             AddPlayerButton.GetComponent<Button>().onClick.AddListener(OnAddPlayer);
             CloseButton.GetComponent<Button>().onClick.AddListener(OnClose);
         }
