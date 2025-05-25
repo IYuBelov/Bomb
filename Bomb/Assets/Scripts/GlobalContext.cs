@@ -1,17 +1,18 @@
 using Account;
 using Lib;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Event = Lib.Event;
 
 public class GlobalContext : MonoBehaviour
 {
     private EventManager _eventManager;
-    public AccountPersistentObject pData;
+    public AccountPersistentObject AccountData;
     
     void Awake()
     {
         _eventManager = new EventManager();
-        pData = GetComponent<AccountPersistentObject>();
+        AccountData = GetComponent<AccountPersistentObject>();
     }
 
     public EventListener MakeEventListener()
@@ -26,7 +27,7 @@ public class GlobalContext : MonoBehaviour
     
     public AccountPersistentData PData()
     {
-        return pData.data;
+        return AccountData.data;
     }
 }
 

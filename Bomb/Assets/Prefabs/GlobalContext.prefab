@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da7675b647aed5478d97443b26fe644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pData: {fileID: 0}
+  AccountData: {fileID: 0}
 --- !u!82 &4691566126108489764
 AudioSource:
   m_ObjectHideFlags: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfa55e513e9f4009aab45840abb0f114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  persistentID: 
+  persistentID: 666
   destroyDuplicates: 1
   saveFileName: persistentObjects.json
   data:
