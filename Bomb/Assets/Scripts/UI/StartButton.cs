@@ -1,6 +1,12 @@
+using Lib.Unity.UI;
+using Unity.Android.Gradle.Manifest;
+using UnityEditor.PackageManager;
+
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Action = System.Action;
 
 namespace UI
 {
@@ -31,6 +37,18 @@ namespace UI
             UpdateState();
             var button = GetComponent<Button>();
             button.onClick.AddListener(OnStartGame);
+            _eventListener.Add(TGPlayerSelectionWidget.evAddPlayer, new Action(OnAddPlayer));
+            _eventListener.Add(TGPlayerSelectionWidget.evRemovePlayer, new Action(OnRemovePlayer));
+        }
+
+        private void OnAddPlayer()
+        {
+            UpdateState();
+        }
+
+        private void OnRemovePlayer()
+        {
+            UpdateState();
         }
 
         void OnStartGame()
