@@ -7,41 +7,41 @@ namespace Lib
     {
         private Dictionary<string, Delegate> _eventDictionary = new();
 
-        public void Add(string eventType, Delegate eventHandler)
+        public void Add(string eventName, Delegate eventHandler)
         {
-            if (!_eventDictionary.ContainsKey(eventType))
+            if (!_eventDictionary.ContainsKey(eventName))
             {
-                _eventDictionary[eventType] = eventHandler;
+                _eventDictionary[eventName] = eventHandler;
             }
             else
             {
-                _eventDictionary[eventType] = Delegate.Combine(_eventDictionary[eventType], eventHandler);
+                _eventDictionary[eventName] = Delegate.Combine(_eventDictionary[eventName], eventHandler);
             }
         }
 
-        public void Remove(string eventType, Delegate eventHandler)
+        public void Remove(string eventName, Delegate eventHandler)
         {
-            if (_eventDictionary.ContainsKey(eventType))
+            if (_eventDictionary.ContainsKey(eventName))
             {
-                var currentDelegate = _eventDictionary[eventType];
+                var currentDelegate = _eventDictionary[eventName];
                 currentDelegate = Delegate.Remove(currentDelegate, eventHandler);
 
                 if (currentDelegate == null)
                 {
-                    _eventDictionary.Remove(eventType);
+                    _eventDictionary.Remove(eventName);
                 }
                 else
                 {
-                    _eventDictionary[eventType] = currentDelegate;
+                    _eventDictionary[eventName] = currentDelegate;
                 }
             }
         }
 
-        public void Call(string eventType, params object[] args)
+        public void Call(string eventName, params object[] args)
         {
-            if (_eventDictionary.ContainsKey(eventType))
+            if (_eventDictionary.ContainsKey(eventName))
             {
-                _eventDictionary[eventType].DynamicInvoke(args);
+                _eventDictionary[eventName].DynamicInvoke(args);
             }
         }
 
@@ -58,9 +58,9 @@ namespace Lib
         public Event(EventManager eventManager) => _eventManager = eventManager;
         ~Event() => _eventManager = null;
 
-        public void Call(string eventType, params object[] args)
+        public void Call(string eventName, params object[] args)
         {
-            _eventManager.Call(eventType, args);
+            _eventManager.Call(eventName, args);
         }
     }
     
