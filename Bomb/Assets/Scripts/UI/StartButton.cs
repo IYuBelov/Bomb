@@ -1,6 +1,6 @@
 using Lib.Unity.UI;
-using Unity.Android.Gradle.Manifest;
-using UnityEditor.PackageManager;
+#if UNITY_ANDROID 
+#endif
 
 using System;
 using UnityEngine;

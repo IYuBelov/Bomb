@@ -13,6 +13,21 @@ namespace Lib.Unity.Serialization
         protected override void InitializePersistentObject()
         {
             base.InitializePersistentObject();
+            
+// #if UNITY_ANDROID
+//             if (Application.platform == RuntimePlatform.Android)
+//             {
+//                 if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(UnityEngine.Android.Permission.ExternalStorageWrite))
+//                 {
+//                     // Запрос разрешения
+//                     UnityEngine.Android.Permission.RequestUserPermission(UnityEngine.Android.Permission.ExternalStorageWrite);
+//                     // После этого разрешения, пользователь увидит диалог.
+//                     // Результат можно отследить через PermisisonCallbacks
+//                     // (сложнее, для начала просто запросите)
+//                 }
+//             }
+// #endif
+            
             Load();
         }
 

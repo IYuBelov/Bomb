@@ -38,7 +38,7 @@ namespace UI
             else if (state == GameState.Explosion)
             {
                 var player = GameComponent.getCurrentPlayer();
-                textComponent.text = $"<size=75>Игрок: {player.Score}</size>\n<size=39>Вас подорвало!</size>";
+                textComponent.text = $"<size=75>Игрок: {player.Name}</size>\n<size=39>Вас подорвало!</size>";
             }
             else if (state == GameState.ReadyToStart)
             {
